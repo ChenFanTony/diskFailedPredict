@@ -1,10 +1,26 @@
 import json
+import re
 import sys
 from predictor import get_diskfailurepredictor_path, DiskFailurePredictor
 
 def load_smart(outb):
     predict_datas = []
-    health_data = json.loads(outb)
+    health_data = {}
+    raw_data = False
+    health_data_tmp = json.loads(outb)
+
+    tmp_keys = health_data_tmp.keys()
+    for o_key in tmp_keys:
+        ret = re.match(r"^202\d\d\d\d\d-.*", o_key)
+        if not ret:
+            raw_data = True
+        break
+
+    if raw_data:
+        for i in range(6):
+            health_data[i] = health_data_tmp
+    else:
+        health_data = health_data_tmp
 
     if len(health_data) >= 6:
         o_keys = sorted(health_data.keys(), reverse=True)
@@ -56,4 +72,4 @@ if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("need a file input")
         sys.exit(0)
-    main()
+    print(main())

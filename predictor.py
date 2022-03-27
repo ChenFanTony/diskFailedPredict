@@ -256,6 +256,7 @@ class DiskFailurePredictor(object):
 
             all_pred.append(1 if any(pred) else 0)
 
+        print("prediction match model files %d, pass: %d" %(len(modellist), sum(all_pred)))
         score = 2 ** sum(all_pred) - len(modellist)
         if score > 10:
             return "Bad"
